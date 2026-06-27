@@ -1,0 +1,41 @@
+import json
+import google.generativeai as genai
+
+extractor_model = genai.GenerativeModel(
+    "gemini-1.5-flash",
+    generation_config={"temperature": 0}
+)
+
+def update_device(device, user_text):
+
+    prompt = f"""
+Extrae la información del siguiente texto.
+
+Devuelve únicamente JSON.
+
+Campos:
+
+name
+manufacturer
+intended_use
+principle
+active
+software
+implantable
+sterile
+duration
+
+Texto:
+
+{user_text}
+"""
+
+    response = extractor_model.generate_content(prompt)
+
+    try:
+        data = json.loads(response.text)
+        device.update(data)
+    except:
+        pass
+
+    return device
